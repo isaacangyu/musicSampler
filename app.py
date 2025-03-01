@@ -7,5 +7,6 @@ app = Flask(__name__)
 def hello():
     return 'Please enter a song.'
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/sample')
+def sample():
+    return 'Now sampling...'

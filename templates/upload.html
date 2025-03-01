@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h2, h3 {
+            color: #bb86fc;
+        }
+        form {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        input[type="submit"] {
+            background-color: #6200ee;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #3700b3;
+        }
+        .flash-messages {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+        }
+        .success {
+            background-color: #2e7d32;
+        }
+        .error {
+            background-color: #d32f2f;
+        }
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+            padding: 0;
+            width: 300px;
+        }
+        .file-item {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Upload a File</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+    </form>
+    
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-messages {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <h3>Uploaded Files</h3>
+    {% if files %}
+        <div class="file-list">
+            {% for file in files %}
+                <div class="file-item">{{ file }}</div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No files uploaded yet.</p>
+    {% endif %}
+</body>
+</html>

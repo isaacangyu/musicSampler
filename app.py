@@ -6,6 +6,7 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'mp3'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.secret_key = 'my_secret_key'
 
 @app.route('/')
@@ -16,9 +17,6 @@ def hello():
 def sample():
     return 'Now sampling...'
 
-# Ensure the upload directory exists
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -27,19 +25,22 @@ def allowed_file(filename):
 def upload_file():
     if request.method == 'POST':
         if 'file' not in request.files:
-            abort(400, description="No file part")
+            flash('File not found', 'error')
+            '''return render_template('upload.html', message='No file part')'''
         file = request.files['file']
         if file.filename == '':
-            abort(400, description="No selected file")
+            flash('No selected file', 'error')
+            '''return render_template('upload.html', message='No selected file')'''
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            '''return 'File uploaded successfully!'''
             flash('File uploaded successfully!', 'success')
-            return render_template('upload.html')
-        else:
-            abort(400, description="File type not allowed")
-    return render_template('upload.html')
+            list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])
+            return render_template('upload.html', files=list_of_files)
+        '''else: abort(400, description="File type not allowed")'''
+        flash('Invalid file type', 'error')
+    list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])
+    return render_template('upload.html', files=list_of_files)
 
 '''
 return 

@@ -13,7 +13,7 @@ def parse(user_input: str, block_map: dict) -> list[list[Block]]:
         for word in words:
             if word[:4] == "loop":  # Ex: loop(5, drums, strings, bass)
                 loop_inside = word[5:-1]
-                loop_elements = loop_inside.split(';')[1:]
+                loop_elements = loop_inside.split(',')[1:]
                 print(loop_inside)
                 num_iterations = int(loop_inside[0])
 

@@ -1,18 +1,10 @@
 {
-    "veggie": {
-        "name": "veggie",
+    "c": {
+        "name": "c",
         "start": 4000,
         "end": 8000,
         "block_type": "Sample",
-        "audio_file": "trimmed_veggie.mp3",
+        "audio_file": "trimmed_c.mp3",
         "duration": 4000
-    },
-    "Clairo": {
-        "name": "Clairo",
-        "start": 9000,
-        "end": 15000,
-        "block_type": "Sample",
-        "audio_file": "trimmed_Clairo.mp3",
-        "duration": 6000
     }
 }

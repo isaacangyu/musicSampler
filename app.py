@@ -63,12 +63,12 @@ def create_block():
         audio_file_path = None
 
     block = Block(
-        name=block_name,
-        start=start_time,
-        end=end_time,
-        block_type=block_type,
-        audio_file=audio_file_path,
-        duration=duration
+        name = block_name,
+        start = start_time*1000,
+        end = end_time*1000,
+        block_type = block_type,
+        audio_file = audio_file_path,
+        duration = end_time - start_time
     )
 
     flash(f'Block "{block_name}" created successfully!', 'success')

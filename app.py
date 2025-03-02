@@ -68,7 +68,7 @@ def create_block():
         end = end_time*1000,
         block_type = block_type,
         audio_file = audio_file_path,
-        duration = end_time - start_time
+        duration = 1000*(end_time - start_time)
     )
 
     flash(f'Block "{block_name}" created successfully!', 'success')

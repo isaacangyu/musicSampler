@@ -19,7 +19,7 @@ class Block:
     def trim_audio_file(self, start, end, audio_file):
         audio = AudioSegment.from_file(audio_file)
         trimmed_audio = audio[start:end]
-        output_file_path = f"trimmed_{os.path.basename(self.name)}" # AI-assisted
+        output_file_path = f"trimmed_{os.path.basename(self.name)}.mp3" # AI-assisted
         trimmed_audio.export(output_file_path, format="mp3")
         return output_file_path
 

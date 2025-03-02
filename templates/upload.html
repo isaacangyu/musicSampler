@@ -88,7 +88,6 @@
     {% endwith %}
     
     <h3>Uploaded Files</h3>
-    <!-- this is the flash message for file list / tracks, maybe change to track grid?-->
     {% if files %}
         <div class="file-list">
             {% for file in files %}
@@ -98,6 +97,38 @@
     {% else %}
         <p>No files uploaded yet.</p>
     {% endif %}
+
+    <h2>Create a Block</h2>
+    <form method="POST" action="/create_block">
+        <label for="block_name">Block Name:</label>
+        <input type="text" id="block_name" name="block_name" required>
+        
+        <label for="start_time">Start Time (s):</label>
+        <input type="number" id="start_time" name="start_time" required>
+        
+        <label for="end_time">End Time (s):</label>
+        <input type="number" id="end_time" name="end_time" required>
+        
+        <label for="block_type">Block Type:</label>
+        <select id="block_type" name="block_type" required>
+            <option value="Sample">Sample</option>
+            <option value="Empty">Empty</option>
+            <option value="Merge">Merge</option>
+        </select>
+        
+        <label for="audio_file">Select Audio File:</label>
+        <select id="audio_file" name="audio_file">
+            <option value="">None</option>
+            {% for file in files %}
+                <option value="{{ file }}">{{ file }}</option>
+            {% endfor %}
+        </select>
+        
+        <!-- <label for="duration">Duration (ms):</label>
+        <input type="number" id="duration" name="duration"> -->
+        
+        <input type="submit" value="Create Block">
+    </form>
 </body>
 <head>
     <title>Text Box</title>

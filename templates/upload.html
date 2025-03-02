@@ -16,6 +16,8 @@
             --error: #d32f2f;
             --button: #6200ee;
             --button-hover: #3700b3;
+            --accent: #03dac6;
+            --accent-hover: #018786;
         }
 
         * {
@@ -77,6 +79,18 @@
             grid-row: 2;
             padding: 1.5rem;
             background-color: var(--background);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-controls {
+            display: flex;
+            gap: 0.8rem;
         }
 
         .main-content {
@@ -201,6 +215,33 @@
             background-color: var(--primary-dark);
         }
 
+        .export-button {
+            background-color: var(--accent);
+            color: black;
+            font-weight: bold;
+        }
+
+        .export-button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .play-mixed-button {
+            background-color: var(--primary);
+            color: black;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .play-mixed-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .play-mixed-button i {
+            font-size: 1.2rem;
+        }
+
         .timeline-container {
             display: flex;
             flex-direction: column;
@@ -259,6 +300,12 @@
             margin-top: 1rem;
         }
 
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
@@ -283,6 +330,10 @@
             .main-content {
                 grid-row: 4;
             }
+
+            .timeline-controls {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -297,16 +348,20 @@
                     <input type="file" name="file" id="file-upload">
                     <input type="submit" value="Upload">
                 </form>
-                
-                <form method="POST" action="/download_mp3" style="margin: 0;">
-                    <button type="submit">Export MP3</button>
-                </form>
             </div>
         </div>
         
         <!-- Audio Timeline Section -->
         <div class="timeline-section">
-            <h2>Audio Timeline</h2>
+            <div class="timeline-header">
+                <h2>Audio Timeline</h2>
+                <div class="timeline-controls">
+                    <button type="button" class="play-mixed-button">
+                        <span>▶</span> Play Mixed
+                    </button>
+                    <button type="button" class="export-button">Export</button>
+                </div>
+            </div>
             <div class="timeline-container">
                 {% if blocks %}
                     {% for block_name, block in blocks.items() %}
@@ -314,8 +369,7 @@
                             <div class="timeline-label">{{ block_name }}</div>
                             <div class="timeline-track">
                                 <div class="timeline-block" 
-                                     style="left: {{ (block['start'] / 1000) * 50 }}px; 
-                                            width: {{ (block['duration'] / 1000) * 50 }}px;">
+                                     style="left: {{ (block['start'] / 1000) * 50 }}px; width: {{ (block['duration'] / 1000) * 50 }}px;">
                                     {{ block_name }}
                                 </div>
                             </div>
@@ -418,6 +472,11 @@
             <!-- Uploaded Files -->
             <div class="card">
                 <h2>Uploaded Files</h2>
+                <div class="action-buttons">
+                    <form method="POST" action="/download_mp3" style="margin: 0;">
+                        <button type="submit" class="export-button">Export MP3</button>
+                    </form>
+                </div>
                 {% if files %}
                     <div class="file-list">
                         {% for file in files %}

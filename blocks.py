@@ -39,6 +39,6 @@ class Block:
         pygame.mixer.music.play()
 
         while pygame.mixer.music.get_busy(): 
-            pygame.time.Clock().tick(10)
+            pygame.time.Clock().tick(100)
 
     

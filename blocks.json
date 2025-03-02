@@ -1,0 +1,18 @@
+{
+    "block1": {
+        "name": "block1",
+        "start": 2000,
+        "end": 6000,
+        "block_type": "Sample",
+        "audio_file": "trimmed_block1.mp3",
+        "duration": 4000
+    },
+    "block2": {
+        "name": "block2",
+        "start": 4000,
+        "end": 10000,
+        "block_type": "Sample",
+        "audio_file": "trimmed_block2.mp3",
+        "duration": 6000
+    }
+}

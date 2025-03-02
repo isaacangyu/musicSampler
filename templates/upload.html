@@ -39,7 +39,7 @@
         .container {
             display: grid;
             grid-template-columns: 300px 1fr;
-            grid-template-rows: auto 1fr;
+            grid-template-rows: auto auto 1fr;
             min-height: 100vh;
         }
 
@@ -65,15 +65,24 @@
 
         .sidebar {
             grid-column: 1;
+            grid-row: 2 / -1;
             background-color: var(--surface);
             padding: 1.5rem;
             overflow-y: auto;
             border-right: 1px solid var(--primary-dark);
         }
 
+        .timeline-section {
+            grid-column: 2;
+            grid-row: 2;
+            padding: 1.5rem;
+            background-color: var(--background);
+        }
+
         .main-content {
             grid-column: 2;
-            padding: 2rem;
+            grid-row: 3;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
             gap: 2rem;
@@ -192,22 +201,58 @@
             background-color: var(--primary-dark);
         }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            grid-gap: 1rem;
-            margin-top: 1rem;
+        .timeline-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
         }
 
-        .grid-item {
-            background-color: var(--surface-light);
-            border-radius: 4px;
-            padding: 1rem;
-            height: 150px;
+        .timeline-row {
             display: flex;
-            justify-content: center;
+            height: 60px;
+            background-color: var(--surface);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .timeline-label {
+            width: 120px;
+            background-color: var(--surface-light);
+            display: flex;
             align-items: center;
-            text-align: center;
+            justify-content: center;
+            padding: 0 0.8rem;
+            font-weight: bold;
+            border-right: 1px solid var(--primary-dark);
+        }
+
+        .timeline-track {
+            flex: 1;
+            position: relative;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--surface),
+                var(--surface) 49px,
+                var(--surface-light) 49px,
+                var(--surface-light) 50px
+            );
+        }
+
+        .timeline-block {
+            position: absolute;
+            height: 40px;
+            top: 10px;
+            background-color: var(--primary);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 0.5rem;
         }
 
         .textarea-container {
@@ -217,16 +262,26 @@
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
             }
             
             .sidebar {
                 grid-column: 1 / -1;
+                grid-row: 3;
                 border-right: none;
-                border-bottom: 1px solid var(--primary-dark);
+                border-top: 1px solid var(--primary-dark);
+            }
+            
+            .timeline-section, .main-content {
+                grid-column: 1 / -1;
+            }
+            
+            .timeline-section {
+                grid-row: 2;
             }
             
             .main-content {
-                grid-column: 1 / -1;
+                grid-row: 4;
             }
         }
     </style>
@@ -246,6 +301,32 @@
                 <form method="POST" action="/download_mp3" style="margin: 0;">
                     <button type="submit">Export MP3</button>
                 </form>
+            </div>
+        </div>
+        
+        <!-- Audio Timeline Section -->
+        <div class="timeline-section">
+            <h2>Audio Timeline</h2>
+            <div class="timeline-container">
+                {% if blocks %}
+                    {% for block_name, block in blocks.items() %}
+                        <div class="timeline-row">
+                            <div class="timeline-label">{{ block_name }}</div>
+                            <div class="timeline-track">
+                                <div class="timeline-block" 
+                                     style="left: {{ (block['start'] / 1000) * 50 }}px; 
+                                            width: {{ (block['duration'] / 1000) * 50 }}px;">
+                                    {{ block_name }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="timeline-row">
+                        <div class="timeline-label">No blocks</div>
+                        <div class="timeline-track"></div>
+                    </div>
+                {% endif %}
             </div>
         </div>
         
@@ -346,16 +427,6 @@
                 {% else %}
                     <p>No files uploaded yet.</p>
                 {% endif %}
-            </div>
-            
-            <!-- Empty Grid for future content -->
-            <div class="card">
-                <h2>Audio Timeline</h2>
-                <div class="grid-container">
-                    {% for i in range(6) %}
-                        <div class="grid-item">Empty slot</div>
-                    {% endfor %}
-                </div>
             </div>
         </div>
     </div>

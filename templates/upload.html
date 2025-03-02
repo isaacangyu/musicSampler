@@ -99,4 +99,21 @@
         <p>No files uploaded yet.</p>
     {% endif %}
 </body>
+<head>
+    <title>Text Box</title>
+</head>
+<body>
+    <form method="POST" action="/">
+        <textarea id="myTextarea" name="text" rows="4" cols="50">{{ text }}</textarea><br>
+        <button type="button" onclick="addNewLine()">Add New Line</button><br>
+        <!--<input type="submit" value="Submit">--> 
+    </form>
+
+    <script>
+        function addNewLine() {
+            var textarea = document.getElementById("myTextarea");
+            textarea.value += "\\n";
+        }
+    </script>
+</body>
 </html>

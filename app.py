@@ -1,4 +1,4 @@
-from flask import Flask, flash, request, render_template, render_template_string, abort
+from flask import Flask, flash, redirect, request, render_template, render_template_string, abort, url_for
 import os
 from werkzeug.utils import secure_filename
 
@@ -41,6 +41,15 @@ def upload_file():
         flash('Invalid file type', 'error')
     list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template('upload.html', files=list_of_files)
+
+def index():
+    text = ""
+    if request.method == "POST":
+        text = request.form["text"]
+        # Process the text with newlines here (e.g., save to a file or database)
+    return render_template("upload.html", text=text)
+
+
 
 '''
 return 

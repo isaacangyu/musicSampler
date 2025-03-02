@@ -4,6 +4,7 @@ import json
 from werkzeug.utils import secure_filename
 from blocks import Block  # Import the Block class
 import random
+import parsing
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'

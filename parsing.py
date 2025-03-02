@@ -29,27 +29,30 @@ def parse(user_input: str, block_map: dict) -> list[list[Block]]:
 def secToMs(sec):
     return sec*1000
 
+def main_parse(user_input: str, block_map: dict):
 # parse
-b1 = Block(name= "drummer", start = secToMs(60.2), end = secToMs(65), block_type="Sample", audio_file="faded.mp3")
-b2 = Block(name= "strings", start = secToMs(60.2), end = secToMs(65), block_type="Sample", audio_file="uploads/eat_your_veggies.mp3")
-b3 = Block(name= "base", start = secToMs(60.2), end = secToMs(65), block_type="Sample", audio_file="uploads/clairoType_2.mp3")
+# b1 = Block(name= "drummer", start = secToMs(60.2), end = secToMs(65), block_type="Sample", audio_file="faded.mp3")
+# b2 = Block(name= "strings", start = secToMs(60.2), end = secToMs(65), block_type="Sample", audio_file="uploads/eat_your_veggies.mp3")
+# b3 = Block(name= "base", start = secToMs(60.2), end = secToMs(65), block_type="Sample", audio_file="uploads/clairoType_2.mp3")
+# user_input, map = "strings strings strings drummer strings base base loop(2;strings;base) \n drummer drummer drummer base", {"drummer":b1 , "strings": b2, "base":b3}
 
-parsed = parse("strings strings strings drummer strings base base loop(2;strings;base) \n drummer drummer drummer base", {"drummer":b1 , "strings": b2, "base":b3})
-print(parsed)
-# AudioSegment objects
-max_duration = max([block.duration for track in parsed for block in track])
-print(max_duration)
-audiosegments = blocks.AudioSegment.silent(duration=50000)
-for track in parsed:
-    audiosegment = blocks.AudioSegment.empty()
-    for block in track:
-        # concatenate
-        print(block)
-        if block.block_type == 'Empty':
-            audiosegment += blocks.AudioSegment.silent(duration=block.duration)
-        else:
-            audiosegment += blocks.AudioSegment.from_file(block.audio_sample_file, format='mp3')
-    audiosegments = audiosegments.overlay(audiosegment)
-    print(audiosegments)
-# export
-output_file_handle = audiosegments.export("output.mp3", format="mp3")
+    parsed = parse(user_input, block_map)
+    print(parsed)
+    # AudioSegment objects
+    max_duration = max([block.duration for track in parsed for block in track])
+    print(max_duration)
+    audiosegments = blocks.AudioSegment.silent(duration=50000)
+    for track in parsed:
+        audiosegment = blocks.AudioSegment.empty()
+        for block in track:
+            # concatenate
+            print(block)
+            if block.block_type == 'Empty':
+                audiosegment += blocks.AudioSegment.silent(duration=block.duration)
+            else:
+                audiosegment += blocks.AudioSegment.from_file(block.audio_sample_file, format='mp3')
+        audiosegments = audiosegments.overlay(audiosegment)
+        print(audiosegments)
+    # export
+    output_file_handle = audiosegments.export("output.mp3", format="mp3")
+    return output_file_handle

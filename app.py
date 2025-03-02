@@ -1,6 +1,7 @@
-from flask import Flask, flash, request, render_template, render_template_string, abort
+from flask import Flask, flash, request, render_template, render_template_string, abort, redirect, url_for
 import os
 from werkzeug.utils import secure_filename
+from blocks import Block  # Import the Block class
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -26,32 +27,52 @@ def upload_file():
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('File not found', 'error')
-            '''return render_template('upload.html', message='No file part')'''
         file = request.files['file']
         if file.filename == '':
             flash('No selected file', 'error')
-            '''return render_template('upload.html', message='No selected file')'''
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('File uploaded successfully!', 'success')
             list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])
             return render_template('upload.html', files=list_of_files)
-        '''else: abort(400, description="File type not allowed")'''
         flash('Invalid file type', 'error')
     list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template('upload.html', files=list_of_files)
 
-'''
-return 
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-'''
+@app.route('/create_block', methods=['POST'])
+def create_block():
+    block_name = request.form['block_name']
+    start_time = int(request.form['start_time'])
+    end_time = int(request.form['end_time'])
+    block_type = request.form['block_type']
+    audio_file = request.form['audio_file']
+    duration = request.form.get('duration', type=int)
+
+    if block_type != "Empty" and not audio_file:
+        flash('Audio file is required for non-empty blocks', 'error')
+        return redirect(url_for('upload_file'))
+
+    if block_type == "Empty" and not duration:
+        flash('Duration is required for empty blocks', 'error')
+        return redirect(url_for('upload_file'))
+
+    if audio_file:
+        audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file)
+    else:
+        audio_file_path = None
+
+    block = Block(
+        name=block_name,
+        start=start_time,
+        end=end_time,
+        block_type=block_type,
+        audio_file=audio_file_path,
+        duration=duration
+    )
+
+    flash(f'Block "{block_name}" created successfully!', 'success')
+    return redirect(url_for('upload_file'))
 
 if __name__ == '__main__':
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)

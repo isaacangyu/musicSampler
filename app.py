@@ -1,14 +1,37 @@
 from flask import Flask, flash, request, render_template, render_template_string, abort, redirect, send_file, url_for
 import os
+import json
 from werkzeug.utils import secure_filename
 from blocks import Block  # Import the Block class
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
+BLOCKS_FILE = 'blocks.json'
 ALLOWED_EXTENSIONS = {'mp3'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.secret_key = 'my_secret_key'
+
+# Load blocks from file (if it exists)
+def load_blocks():
+    if os.path.exists(BLOCKS_FILE) and os.path.getsize(BLOCKS_FILE) > 0:
+        try:
+            with open(BLOCKS_FILE, 'r') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            # If the file is malformed, return an empty dictionary
+            return {}
+    else:
+        # If the file doesn't exist or is empty, return an empty dictionary
+        return {}
+
+# Save blocks to file
+def save_blocks(blocks):
+    with open(BLOCKS_FILE, 'w') as f:
+        json.dump(blocks, f, indent=4)
+
+# Initialize blocks dictionary
+blocks = load_blocks()
 
 @app.route('/')
 def hello():
@@ -24,21 +47,67 @@ def allowed_file(filename):
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+    # Load existing blocks
+    blocks = load_blocks()
+
+    # Handle file upload
     if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('File not found', 'error')
-        file = request.files['file']
-        if file.filename == '':
-            flash('No selected file', 'error')
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            flash('File uploaded successfully!', 'success')
-            list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])
-            return render_template('upload.html', files=list_of_files)
-        flash('Invalid file type', 'error')
+        # Check if the request is for file upload
+        if 'file' in request.files:
+            file = request.files['file']
+            if file.filename == '':
+                flash('No selected file', 'error')
+            elif file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                flash('File uploaded successfully!', 'success')
+
+        # Check if the request is for block creation
+        elif 'block_name' in request.form:
+            block_name = request.form['block_name']
+            start_time = int(request.form['start_time'])
+            end_time = int(request.form['end_time'])
+            block_type = request.form['block_type']
+            audio_file = request.form['audio_file']
+            duration = request.form.get('duration', type=int)
+
+            # Validate input
+            if block_type != "Empty" and not audio_file:
+                flash('Audio file is required for non-empty blocks', 'error')
+            elif block_type == "Empty" and not duration:
+                flash('Duration is required for empty blocks', 'error')
+            else:
+                # Set audio file path
+                if audio_file:
+                    audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file)
+                else:
+                    audio_file_path = None
+
+                # Create a new Block object
+                block = Block(
+                    name=block_name,
+                    start=start_time * 1000,  # Convert to milliseconds
+                    end=end_time * 1000,  # Convert to milliseconds
+                    block_type=block_type,
+                    audio_file=audio_file_path,
+                    duration=1000 * (end_time - start_time)  # Convert to milliseconds
+                )
+
+                # Add the block to the dictionary
+                blocks[block_name] = block.to_dict()
+
+                # Save the updated blocks dictionary to the JSON file
+                save_blocks(blocks)
+
+                # Flash success message
+                flash(f'Block "{block_name}" created successfully!', 'success')
+
+    # Get the list of uploaded files
     list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])
-    return render_template('upload.html', files=list_of_files)
+
+    # Render the template with the files and blocks data
+    return render_template('upload.html', files=list_of_files, blocks=blocks)
+
 
 def index():
     text = ""
@@ -64,40 +133,7 @@ return
       <input type=submit value=Upload>
     </form>
 '''
-@app.route('/create_block', methods=['POST'])
-def create_block():
-    block_name = request.form['block_name']
-    start_time = int(request.form['start_time'])
-    end_time = int(request.form['end_time'])
-    block_type = request.form['block_type']
-    audio_file = request.form['audio_file']
-    duration = request.form.get('duration', type=int)
-
-    if block_type != "Empty" and not audio_file:
-        flash('Audio file is required for non-empty blocks', 'error')
-        return redirect(url_for('upload_file'))
-
-    if block_type == "Empty" and not duration:
-        flash('Duration is required for empty blocks', 'error')
-        return redirect(url_for('upload_file'))
-
-    if audio_file:
-        audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file)
-    else:
-        audio_file_path = None
-
-    block = Block(
-        name = block_name,
-        start = start_time*1000,
-        end = end_time*1000,
-        block_type = block_type,
-        audio_file = audio_file_path,
-        duration = 1000*(end_time - start_time)
-    )
-
-    flash(f'Block "{block_name}" created successfully!', 'success')
-    return redirect(url_for('upload_file'))
-
 if __name__ == '__main__':
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     app.run(debug=True)
+    

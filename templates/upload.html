@@ -98,8 +98,29 @@
         <p>No files uploaded yet.</p>
     {% endif %}
 
+    <h2>List of Blocks</h2>
+    <div class="block-list">
+        {% if blocks %}
+            {% for block_name, block in blocks.items() %}
+                <div class="block-item">
+                    <h3>{{ block_name }}</h3>
+                    <button onclick="play">
+                    <!--
+                    <p>Type: {{ block['block_type'] }}</p>
+                    <p>Start: {{ block['start'] }} ms</p>
+                    <p>End: {{ block['end'] }} ms</p>
+                    <p>Duration: {{ block['duration'] }} ms</p>
+                    <p>Audio File: {{ block['audio_file'] if block['audio_file'] else 'None' }}</p>
+                    -->
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No blocks created yet.</p>
+        {% endif %}
+    </div>
+
     <h2>Create a Block</h2>
-    <form method="POST" action="/create_block">
+    <form method="POST" action="/upload">
         <label for="block_name">Block Name:</label>
         <input type="text" id="block_name" name="block_name" required>
         
@@ -146,8 +167,8 @@
             textarea.value += "\\n";
         }
     </script>
-    <form method="POST" action="/download_mp3">
+    <!-- <form method="POST" action="/download_mp3">
         <button type="submit">Export MP3</button>
-    </form>
+    </form> -->
 </body>
 </html>

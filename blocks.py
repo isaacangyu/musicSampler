@@ -41,4 +41,13 @@ class Block:
         while pygame.mixer.music.get_busy(): 
             pygame.time.Clock().tick(100)
 
-    
+    def to_dict(self):
+        # convert to dict
+        return {
+            'name': self.name,
+            'start': self.start,
+            'end': self.end,
+            'block_type': self.block_type,
+            'audio_file': self.audio_sample_file,
+            'duration': self.duration
+        }

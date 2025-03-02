@@ -17,9 +17,9 @@ class Block:
                 self.audio_sample_file = self.trim_audio_file(start, end, audio_file)
         
     def trim_audio_file(self, start, end, audio_file):
-        audio = AudioSegment.from_file(audio_file, format="mp3")
+        audio = AudioSegment.from_file(audio_file)
         trimmed_audio = audio[start:end]
-        output_file_path = f"trimmed_{os.path.basename(self.name)}.mp3"
+        output_file_path = f"trimmed_{os.path.basename(self.name)}.mp3" # AI-assisted
         trimmed_audio.export(output_file_path, format="mp3")
         return output_file_path
 
@@ -30,30 +30,16 @@ class Block:
         pass
 
     def play(self):
-        if self.block_type == "Empty":
-            time.sleep(self.duration / 1000)  # Convert ms to seconds
+        if(self.block_type == "Empty"):
+            time.sleep(self.duration)
             return
+        
+        pygame.mixer.init()
+        pygame.mixer.music.load(self.audio_sample_file)
+        pygame.mixer.music.play()
 
-        if not self.audio_sample_file or not os.path.exists(self.audio_sample_file):
-            print(f"Audio file not found: {self.audio_sample_file}")
-            return
-
-        try:
-            pygame.mixer.quit()
-            # Initialize pygame mixer
-            pygame.mixer.init()
-            # Load the audio file
-            pygame.mixer.music.load(self.audio_sample_file)
-            # Play the audio
-            pygame.mixer.music.play()
-
-            # Wait for the audio to finish playing
-            while pygame.mixer.music.get_busy():
-                pygame.time.Clock().tick(100)
-        except pygame.error as e:
-            print(f"Error playing audio: {e}")
-        except Exception as e:
-            print(f"Unexpected error: {e}")
+        while pygame.mixer.music.get_busy(): 
+            pygame.time.Clock().tick(100)
 
     def to_dict(self):
         # convert to dict
@@ -65,9 +51,3 @@ class Block:
             'audio_file': self.audio_sample_file,
             'duration': self.duration
         }
-    
-    def __str__(self):
-        return f"Block(name={self.name})"
-
-    def __repr__(self):
-        return f"Block(name='{self.name}')"

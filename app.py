@@ -109,8 +109,11 @@ def upload_file():
             if block_name in blocks:
                 block_data = blocks[block_name]
 
+                num = str(random.randint(1, 100))
+                temp_file_name = f"trimmed_{num}{block_data['name']}.mp3"
+
                 block = Block(
-                    name=str(random.randint(1,100000)) +block_data['name'],
+                    name=num + block_data['name'],
                     start=block_data['start'],
                     end=block_data['end'],
                     block_type=block_data['block_type'],
@@ -120,6 +123,13 @@ def upload_file():
                 
                 # Call the play method
                 block.play()
+
+                print(f"Deleted temporary file: {temp_file_name}")
+
+                if os.path.exists(temp_file_name):
+                    os.remove(temp_file_name)
+                    print(f"Deleted temporary file: {temp_file_name}")
+
                 flash(f'Playing block: {block_name}', 'success')
             else:
                 flash(f'Block "{block_name}" not found', 'error')

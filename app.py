@@ -126,10 +126,11 @@ def upload_file():
 
                 '''print(f"Deleted temporary file: {temp_file_name}")
 
-                # if os.path.exists(temp_file_name):
-                #     os.remove(temp_file_name)
-                #     print(f"Deleted temporary file: {temp_file_name}")
-
+                if os.path.exists(temp_file_name):
+                    os.remove(temp_file_name)
+                    print(f"Deleted temporary file: {temp_file_name}")
+                '''
+    
                 flash(f'Playing block: {block_name}', 'success')
             else:
                 flash(f'Block "{block_name}" not found', 'error')
@@ -155,6 +156,9 @@ def download_mp3():
         # Send the file as an attachment
         return send_file(mp3_path, as_attachment=True, download_name='exported_audio.mp3')
 
+if __name__ == '__main__':
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    app.run(debug=True)
 '''
 return 
     <!doctype html>
@@ -165,6 +169,3 @@ return
       <input type=submit value=Upload>
     </form>
 '''
-if __name__ == '__main__':
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    app.run(debug=True)

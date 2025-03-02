@@ -33,19 +33,19 @@ def save_blocks(blocks):
 # Initialize blocks dictionary
 blocks = load_blocks()
 
-@app.route('/')
-def hello():
-    return 'Please enter a song.'
+# @app.route('/')
+# def hello():
+#     return 'Please enter a song.'
 
-@app.route('/sample')
-def sample():
-    return 'Now sampling...'
+# @app.route('/sample')
+# def sample():
+#     return 'Now sampling...'
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def upload_file():
     # Load existing blocks
     blocks = load_blocks()

@@ -104,7 +104,11 @@
             {% for block_name, block in blocks.items() %}
                 <div class="block-item">
                     <h3>{{ block_name }}</h3>
-                    <button onclick="play">
+                    
+                    <form method="POST" style="display: inline;">
+                        <input type="hidden" name="play_block" value="{{ block_name }}">
+                        <button type="submit" class="play-button">Play</button>
+                    </form>
                     <!--
                     <p>Type: {{ block['block_type'] }}</p>
                     <p>Start: {{ block['start'] }} ms</p>

@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 from flask import Flask, flash, redirect, request, render_template, render_template_string, abort, url_for
-=======
 from flask import Flask, flash, request, render_template, render_template_string, abort, redirect, url_for
->>>>>>> 0279604f78c501ec04d7ad414872198e6d99d252
 import os
 from werkzeug.utils import secure_filename
 from blocks import Block  # Import the Block class

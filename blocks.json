@@ -1,34 +1,18 @@
 {
-    "block2": {
-        "name": "block2",
-        "start": 2000,
-        "end": 3000,
-        "block_type": "Sample",
-        "audio_file": "trimmed_block2.mp3",
-        "duration": 1000
-    },
     "block1": {
         "name": "block1",
         "start": 2000,
-        "end": 5000,
+        "end": 6000,
         "block_type": "Sample",
         "audio_file": "trimmed_block1.mp3",
-        "duration": 3000
+        "duration": 4000
     },
-    "block3": {
-        "name": "block3",
-        "start": 2000,
-        "end": 9000,
+    "block2": {
+        "name": "block2",
+        "start": 4000,
+        "end": 10000,
         "block_type": "Sample",
-        "audio_file": "trimmed_block3.mp3",
-        "duration": 7000
-    },
-    "block4": {
-        "name": "block4",
-        "start": 3000,
-        "end": 9000,
-        "block_type": "Sample",
-        "audio_file": "trimmed_block4.mp3",
+        "audio_file": "trimmed_block2.mp3",
         "duration": 6000
     },
     "b1": {

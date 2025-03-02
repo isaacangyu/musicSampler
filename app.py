@@ -3,6 +3,7 @@ import os
 import json
 from werkzeug.utils import secure_filename
 from blocks import Block  # Import the Block class
+import random
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -101,6 +102,37 @@ def upload_file():
 
                 # Flash success message
                 flash(f'Block "{block_name}" created successfully!', 'success')
+
+
+        elif 'play_block' in request.form:
+            block_name = request.form['play_block']
+            if block_name in blocks:
+                block_data = blocks[block_name]
+
+                num = str(random.randint(1, 100))
+                temp_file_name = f"trimmed_{num}{block_data['name']}.mp3"
+
+                block = Block(
+                    name=num + block_data['name'],
+                    start=block_data['start'],
+                    end=block_data['end'],
+                    block_type=block_data['block_type'],
+                    audio_file=block_data['audio_file'],
+                    duration=block_data['duration']
+                )
+                
+                # Call the play method
+                block.play()
+
+                print(f"Deleted temporary file: {temp_file_name}")
+
+                if os.path.exists(temp_file_name):
+                    os.remove(temp_file_name)
+                    print(f"Deleted temporary file: {temp_file_name}")
+
+                flash(f'Playing block: {block_name}', 'success')
+            else:
+                flash(f'Block "{block_name}" not found', 'error')
 
     # Get the list of uploaded files
     list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])

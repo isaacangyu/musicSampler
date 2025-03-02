@@ -34,19 +34,19 @@ def save_blocks(blocks):
 # Initialize blocks dictionary
 blocks = load_blocks()
 
-# @app.route('/')
-# def hello():
-#     return 'Please enter a song.'
+@app.route('/')
+def hello():
+    return 'Please enter a song.'
 
-# @app.route('/sample')
-# def sample():
-#     return 'Now sampling...'
+@app.route('/sample')
+def sample():
+    return 'Now sampling...'
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     # Load existing blocks
     blocks = load_blocks()
@@ -124,11 +124,11 @@ def upload_file():
                 # Call the play method
                 block.play()
 
-                print(f"Deleted temporary file: {temp_file_name}")
+                print(f"Deleted temporarthe files and blocks data return render_temply file: {temp_file_name}")
 
-                if os.path.exists(temp_file_name):
-                    os.remove(temp_file_name)
-                    print(f"Deleted temporary file: {temp_file_name}")
+                # if os.path.exists(temp_file_name):
+                #     os.remove(temp_file_name)
+                #     print(f"Deleted temporary file: {temp_file_name}")
 
                 flash(f'Playing block: {block_name}', 'success')
             else:
@@ -137,8 +137,7 @@ def upload_file():
     # Get the list of uploaded files
     list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])
 
-    # Render the template with the files and blocks data
-    return render_template('upload.html', files=list_of_files, blocks=blocks)
+    # Render the template with ate('upload.html', files=list_of_files, blocks=blocks)
 
 
 def index():
@@ -146,6 +145,7 @@ def index():
     if request.method == "POST":
         text = request.form["text"]
         # Process the text with newlines here (e.g., save to a file or database)
+    # print(text)
     return render_template("upload.html", text=text)
 
 def download_mp3():
@@ -168,4 +168,3 @@ return
 if __name__ == '__main__':
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     app.run(debug=True)
-    

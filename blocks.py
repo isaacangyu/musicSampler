@@ -15,7 +15,6 @@ class Block:
 
             if block_type != "Empty":
                 self.audio_sample_file = self.trim_audio_file(start, end, audio_file)
-            else: self.audio_sample_file = ''
         
     def trim_audio_file(self, start, end, audio_file):
         audio = AudioSegment.from_file(audio_file)

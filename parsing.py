@@ -30,15 +30,16 @@ def secToMs(sec):
     return sec*1000
 
 # parse
-b1 = Block(name= "drummer", start = secToMs(60.2), end = secToMs(61), block_type="Sample", audio_file="faded.mp3")
-b2 = Block(name= "strings", start = secToMs(60.2), end = secToMs(61), block_type="Sample", audio_file="faded.mp3")
-b3 = Block(name= "base", start = secToMs(60.2), end = secToMs(61), block_type="Sample", audio_file="faded.mp3")
+b1 = Block(name= "drummer", start = secToMs(60.2), end = secToMs(65), block_type="Sample", audio_file="faded.mp3")
+b2 = Block(name= "strings", start = secToMs(60.2), end = secToMs(65), block_type="Sample", audio_file="uploads/eat_your_veggies.mp3")
+b3 = Block(name= "base", start = secToMs(60.2), end = secToMs(65), block_type="Sample", audio_file="uploads/clairoType_2.mp3")
 
-parsed = parse("drummer strings base base loop(2;strings;base) \n empty(2) base", {"drummer":b1 , "strings": b2, "base":b3})
+parsed = parse("strings strings strings drummer strings base base loop(2;strings;base) \n drummer drummer drummer base", {"drummer":b1 , "strings": b2, "base":b3})
 print(parsed)
 # AudioSegment objects
 max_duration = max([block.duration for track in parsed for block in track])
-audiosegments = blocks.AudioSegment.silent(duration=max_duration)
+print(max_duration)
+audiosegments = blocks.AudioSegment.silent(duration=50000)
 for track in parsed:
     audiosegment = blocks.AudioSegment.empty()
     for block in track:
@@ -48,12 +49,7 @@ for track in parsed:
             audiosegment += blocks.AudioSegment.silent(duration=block.duration)
         else:
             audiosegment += blocks.AudioSegment.from_file(block.audio_sample_file, format='mp3')
-    audiosegments.overlay(audiosegment)
-    output_file_handle = audiosegments.export("output.mp3", format="mp3")
-    break
+    audiosegments = audiosegments.overlay(audiosegment)
     print(audiosegments)
-
-# faded_modified = blocks.AudioSegment.from_file('faded.mp3') + 5
-# faded_file_handle = faded_modified.export("output_faded.mp3", format="mp3")
 # export
-# output_file_handle = audiosegments.export("output.mp3", format="mp3")
+output_file_handle = audiosegments.export("output.mp3", format="mp3")

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-from flask import Flask, flash, redirect, request, render_template, render_template_string, abort, url_for
-=======
 from flask import Flask, flash, request, render_template, render_template_string, abort, redirect, url_for
->>>>>>> 0279604f78c501ec04d7ad414872198e6d99d252
 import os
 from werkzeug.utils import secure_filename
 from blocks import Block  # Import the Block class
@@ -44,7 +40,6 @@ def upload_file():
     list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template('upload.html', files=list_of_files)
 
-<<<<<<< HEAD
 def index():
     text = ""
     if request.method == "POST":
@@ -64,7 +59,6 @@ return
       <input type=submit value=Upload>
     </form>
 '''
-=======
 @app.route('/create_block', methods=['POST'])
 def create_block():
     block_name = request.form['block_name']
@@ -98,7 +92,6 @@ def create_block():
 
     flash(f'Block "{block_name}" created successfully!', 'success')
     return redirect(url_for('upload_file'))
->>>>>>> 0279604f78c501ec04d7ad414872198e6d99d252
 
 if __name__ == '__main__':
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)

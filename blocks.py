@@ -51,3 +51,9 @@ class Block:
             'audio_file': self.audio_sample_file,
             'duration': self.duration
         }
+    
+    def __str__(self):
+        return f"Block(name={self.name})"
+
+    def __repr__(self):
+        return f"Block(name='{self.name}')"

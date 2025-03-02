@@ -39,7 +39,7 @@ blocks = load_blocks()
 
 @app.route('/')
 def hello():
-    return 'Please enter a song.'
+    return 'Go to /upload page.'
 
 @app.route('/sample')
 def sample():

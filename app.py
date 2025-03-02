@@ -1,4 +1,4 @@
-from flask import Flask, flash, request, render_template, render_template_string, abort, redirect, url_for
+from flask import Flask, flash, request, render_template, render_template_string, abort, redirect, send_file, url_for
 import os
 from werkzeug.utils import secure_filename
 from blocks import Block  # Import the Block class
@@ -47,7 +47,12 @@ def index():
         # Process the text with newlines here (e.g., save to a file or database)
     return render_template("upload.html", text=text)
 
-
+def download_mp3():
+        # Path to your MP3 file
+        mp3_path = 'faded.mp3' 
+        
+        # Send the file as an attachment
+        return send_file(mp3_path, as_attachment=True, download_name='exported_audio.mp3')
 
 '''
 return 

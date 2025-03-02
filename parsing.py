@@ -7,5 +7,5 @@ for track in tracks:
         Block(name=block, )
 
 
-def merge:
+'''def merge:'''
     

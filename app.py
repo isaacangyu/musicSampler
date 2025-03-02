@@ -126,9 +126,9 @@ def upload_file():
 
                 '''print(f"Deleted temporary file: {temp_file_name}")
 
-                if os.path.exists(temp_file_name):
-                    os.remove(temp_file_name)
-                    print(f"Deleted temporary file: {temp_file_name}")
+                # if os.path.exists(temp_file_name):
+                #     os.remove(temp_file_name)
+                #     print(f"Deleted temporary file: {temp_file_name}")
 
                 flash(f'Playing block: {block_name}', 'success')
             else:

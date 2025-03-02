@@ -1,18 +1,18 @@
 {
-    "block1": {
-        "name": "block1",
-        "start": 2000,
-        "end": 4000,
+    "veggie": {
+        "name": "veggie",
+        "start": 4000,
+        "end": 8000,
         "block_type": "Sample",
-        "audio_file": "trimmed_block1.mp3",
-        "duration": 2000
+        "audio_file": "trimmed_veggie.mp3",
+        "duration": 4000
     },
-    "block2": {
-        "name": "block2",
-        "start": 1000,
-        "end": 6000,
+    "Clairo": {
+        "name": "Clairo",
+        "start": 9000,
+        "end": 15000,
         "block_type": "Sample",
-        "audio_file": "trimmed_block2.mp3",
-        "duration": 5000
+        "audio_file": "trimmed_Clairo.mp3",
+        "duration": 6000
     }
 }

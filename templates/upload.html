@@ -359,10 +359,14 @@
             <div class="timeline-header">
                 <h2>Audio Timeline</h2>
                 <div class="timeline-controls">
-                    <button type="button" class="play-mixed-button">
-                        <span>▶</span> Play Mixed
-                    </button>
-                    <button href='/downloadtype="button" class="export-button">Export</button>
+                    <form method="POST" action="/upload" onsubmit="copyText()">
+                        <input type="hidden" name="notes_text" id="notes_text">
+                        <input type="hidden" name="play_mixed" value="true">
+                        <button type="submit" class="play-mixed-button">
+                            <span>▶</span> Play Mixed
+                        </button>
+                    </form>
+                    <button href='/download' type="button" class="export-button">Export</button>
                 </div>
             </div>
             <div class="timeline-container">
@@ -405,15 +409,28 @@
                 {% else %}
                     <p>No blocks created yet.</p>
                 {% endif %}
-            </div>
+            </div><br><br>
             
             <!-- Text editor in sidebar -->
             <div class="textarea-container card">
-                <h3>Notes</h3>
+                <h3>Tracks</h3>
                 <form method="POST" action="/">
                     <textarea id="myTextarea" name="text" rows="4">{{ text }}</textarea>
                     <button type="button" onclick="addNewLine()">Add New Line</button>
                 </form>
+            </div>
+
+            <!-- Track usage description -->
+            <div class="help-text">
+                <h3>How to Build Tracks</h3>
+                <p>Use the text box below to arrange your audio blocks into a track. Separate each element with a space:</p>
+                <ul>
+                    <li>Use block names to add samples: <code>kick snare hat</code></li>
+                    <li>Loop blocks with: <code>loop(number, block_name)</code> - Example: <code>loop(4, kick)</code></li>
+                    <li>Add silence with: <code>empty(duration)</code> - Example: <code>empty(2)</code></li>
+                </ul>
+                <p>Example track: <code>kick snare loop(2, hat) empty(1) loop(4, bass)</code></p>
+                <p>This will vertically merge all blocks to create your final composition.</p>
             </div>
         </div>
         
@@ -475,11 +492,11 @@
             <!-- Uploaded Files -->
             <div class="card">
                 <h2>Uploaded Files</h2>
-                <div class="action-buttons">
+                <!--<div class="action-buttons">
                     <form method="POST" action="/download_mp3" style="margin: 0;">
                         <button type="submit" class="export-button">Export MP3</button>
                     </form>
-                </div>
+                </div>-->
                 {% if files %}
                     <div class="file-list">
                         {% for file in files %}
@@ -497,6 +514,12 @@
         function addNewLine() {
             var textarea = document.getElementById("myTextarea");
             textarea.value += "\\n";
+        }
+
+        function copyText() {
+            var textarea = document.getElementById("myTextarea");
+            var hiddenInput = document.getElementById("notes_text");
+            hiddenInput.value = textarea.value;
         }
     </script>
 </body>

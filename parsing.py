@@ -38,10 +38,11 @@ def main_parse(user_input: str, block_map: dict):
 
     parsed = parse(user_input, block_map)
     print(parsed)
+
     # AudioSegment objects
-    max_duration = max([block.duration for track in parsed for block in track])
+    max_duration = max([sum([block.duration for block in track]) for track in parsed])
     print(max_duration)
-    audiosegments = blocks.AudioSegment.silent(duration=50000)
+    audiosegments = blocks.AudioSegment.silent(duration=max_duration)
     for track in parsed:
         audiosegment = blocks.AudioSegment.empty()
         for block in track:

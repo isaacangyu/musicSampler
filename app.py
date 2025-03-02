@@ -5,6 +5,8 @@ from werkzeug.utils import secure_filename
 from blocks import Block  # Import the Block class
 import random
 import parsing
+import pygame
+import blocks
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -94,6 +96,8 @@ def upload_file():
                     audio_file=audio_file_path,
                     duration=1000 * (end_time - start_time)  # Convert to milliseconds
                 )
+                if block_type != "Empty":
+                    block.audio_sample_file = block.trim_audio_file(start_time*1000, end_time*1000, audio_file_path)
 
                 # Add the block to the dictionary
                 blocks[block_name] = block.to_dict()
@@ -104,6 +108,26 @@ def upload_file():
                 # Flash success message
                 flash(f'Block "{block_name}" created successfully!', 'success')
 
+
+        elif 'play_mixed' in request.form:
+            notes_text = request.form['notes_text']
+            block_map = {name: Block(**data) for name, data in blocks.items()}
+            try:
+                output_file_handle = parsing.main_parse(notes_text, block_map)
+                # output_file_handle.export(temp_file_name, format="mp3")
+
+                # Play the temporary file using pygame
+                pygame.mixer.init()
+                pygame.mixer.music.load("output.mp3")
+                pygame.mixer.music.play()
+
+                # Wait for the audio to finish playing
+                while pygame.mixer.music.get_busy():
+                    pygame.time.Clock().tick(10)
+
+                flash('Mixed audio played successfully!', 'success')
+            except Exception as e:
+                flash(f'Error parsing notes: {str(e)}', 'error')
 
         elif 'play_block' in request.form:
             block_name = request.form['play_block']
@@ -125,13 +149,10 @@ def upload_file():
                 # Call the play method
                 block.play()
 
-                '''print(f"Deleted temporary file: {temp_file_name}")
-
                 if os.path.exists(temp_file_name):
                     os.remove(temp_file_name)
                     print(f"Deleted temporary file: {temp_file_name}")
-                '''
-    
+
                 flash(f'Playing block: {block_name}', 'success')
             else:
                 flash(f'Block "{block_name}" not found', 'error')
@@ -140,7 +161,23 @@ def upload_file():
     list_of_files = os.listdir(app.config['UPLOAD_FOLDER'])
 
     # Render the template with ate('upload.html', files=list_of_files, blocks=blocks)
+    return render_template('upload.html', files=list_of_files, blocks=blocks)
 
+@app.route('/parse_notes', methods=['POST'])
+def parse_notes():
+    data = request.get_json()
+    text = data.get('text')
+    blocks = load_blocks()
+    
+    # convert blocks to map
+    block_map = {name: Block(**data) for name, data in blocks.items()}
+    
+    try:
+        # parse notes
+        output_file_handle = parsing.main_parse(text, block_map)
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 def index():
     text = ""
@@ -151,15 +188,12 @@ def index():
     return render_template("upload.html", text=text)
 
 def download_mp3():
-        # Path to your MP3 file
-        mp3_path = 'faded.mp3' 
+    # Path to your MP3 file
+    mp3_path = 'faded.mp3' 
         
-        # Send the file as an attachment
-        return send_file(mp3_path, as_attachment=True, download_name='exported_audio.mp3')
+    # Send the file as an attachment
+    return send_file(mp3_path, as_attachment=True, download_name='exported_audio.mp3')
 
-if __name__ == '__main__':
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    app.run(debug=True)
 '''
 return 
     <!doctype html>
@@ -170,3 +204,7 @@ return
       <input type=submit value=Upload>
     </form>
 '''
+
+if __name__ == '__main__':
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    app.run(debug=True)
